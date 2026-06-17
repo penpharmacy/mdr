@@ -1,99 +1,222 @@
 ```javascript
+// ===============================
+// Google Apps Script Web App URL
+// ===============================
+
+const API_URL =
+"https://script.google.com/macros/s/AKfycbxFWuCunHJGn05HQRGd7L5bwZ23QDIpT4ZrqYWuqVhvqXdex8SZr6IVym5EltmTW5WSPg/exec";
+
+
+// ===============================
+// MDRO Checklist
+// ===============================
+
 const checklist = [
 
 "แจ้ง ICN ทันทีเมื่อมีผู้ป่วยติดเชื้อดื้อยามาใช้บริการ โทร 102",
+
 "แจ้งบุคลากรทุกคนในหอผู้ป่วยทราบ",
+
 "แยกผู้ป่วยในห้องแยกหรือโซนติดเชื้อชนิดเดียวกัน",
+
 "ติดป้าย Contact precautions ที่เตียงหรือหน้าห้องผู้ป่วย",
+
 "ไม่วางสิ่งของและอุปกรณ์ของใช้บนเตียงผู้ป่วย",
+
 "แยกอุปกรณ์ของใช้ เช่น ปรอทวัดไข้ เครื่องวัดความดัน หูฟัง รวมทั้งอุปกรณ์ทำความสะอาดเฉพาะรายต่อราย",
+
 "จัดเตรียม Alcohol gel hand rub ไว้ที่หน้าห้องผู้ป่วย/ปลายเตียงผู้ป่วย",
-"ล้างมือทุกครั้งก่อนและหลังสัมผัสผู้ป่วย",
-"สวม PPE ถูกต้อง",
+
+"ล้างมือทุกครั้งก่อนและหลังสัมผัสผู้ป่วย หลังสัมผัสอุปกรณ์และสิ่งแวดล้อม",
+
+"สวมอุปกรณ์ป้องกันร่างกาย (PPE) ถูกต้อง",
+
 "แยกผ้าและขยะเป็นประเภทติดเชื้อ",
+
 "ทำความสะอาดสิ่งแวดล้อมด้วย POSEQUAT 5G",
+
 "เคลื่อนย้ายผู้ป่วยแจ้งหน่วยงานที่เกี่ยวข้อง",
+
 "พนักงานเปลสวม PPE ถูกต้อง",
+
 "จำกัดบุคลากร/ผู้เฝ้าไข้",
+
 "ให้คำแนะนำผู้ป่วยและญาติ",
+
 "ทำการเพาะเชื้อเพื่อยุติ Contact Precautions"
 
 ];
+
+
+// ===============================
+// สร้าง Checklist
+// ===============================
 
 const div = document.getElementById("checklist");
 
 checklist.forEach((item,index)=>{
 
 div.innerHTML += `
-<div class="card mb-2">
-<div class="card-body">
 
-<b>${index+1}. ${item}</b>
+<div class="card mb-2 shadow-sm">
 
-<div class="mt-2">
+    <div class="card-body">
 
-<label class="me-4">
-<input type="radio"
-name="q${index}"
-value="YES">
-ปฏิบัติ
-</label>
+        <div class="fw-bold mb-2">
+            ${index+1}. ${item}
+        </div>
 
-<label>
-<input type="radio"
-name="q${index}"
-value="NO">
-ไม่ปฏิบัติ
-</label>
+        <label class="me-4">
+
+            <input
+                type="radio"
+                name="q${index}"
+                value="YES">
+
+            ปฏิบัติ
+
+        </label>
+
+        <label>
+
+            <input
+                type="radio"
+                name="q${index}"
+                value="NO">
+
+            ไม่ปฏิบัติ
+
+        </label>
+
+    </div>
 
 </div>
 
-</div>
-</div>
 `;
 
 });
 
-function saveData(){
 
-let record = {
+// ===============================
+// Save Data
+// ===============================
 
-date:document.getElementById("auditDate").value,
-ward:document.getElementById("ward").value,
-auditor:document.getElementById("auditor").value,
-organism:document.getElementById("organism").value,
-answers:[]
+async function saveData(){
 
-};
+    try{
 
-for(let i=0;i<16;i++){
+        const auditDate =
+        document.getElementById("auditDate").value;
 
-let ans =
-document.querySelector(
-`input[name="q${i}"]:checked`
-);
+        const ward =
+        document.getElementById("ward").value;
 
-record.answers.push(
-ans ? ans.value : ""
-);
+        const auditor =
+        document.getElementById("auditor").value;
 
-}
+        const organism =
+        document.getElementById("organism").value;
 
-let data =
-JSON.parse(
-localStorage.getItem("mdroData") || "[]"
-);
+        if(!auditDate){
 
-data.push(record);
+            alert("กรุณาระบุวันที่ประเมิน");
 
-localStorage.setItem(
-"mdroData",
-JSON.stringify(data)
-);
+            return;
 
-alert("บันทึกข้อมูลเรียบร้อย");
+        }
 
-location.reload();
+        let record = {
+
+            audit_date : auditDate,
+            ward : ward,
+            auditor : auditor,
+            organism : organism
+
+        };
+
+        let yes = 0;
+        let no = 0;
+
+        for(let i=0;i<16;i++){
+
+            let answer = document.querySelector(
+                `input[name="q${i}"]:checked`
+            );
+
+            if(!answer){
+
+                alert(
+                    "กรุณาเลือกคำตอบข้อที่ " +
+                    (i+1)
+                );
+
+                return;
+
+            }
+
+            let value = answer.value;
+
+            record["check"+(i+1)] = value;
+
+            if(value === "YES") yes++;
+
+            if(value === "NO") no++;
+
+        }
+
+        record.score_yes = yes;
+
+        record.score_no = no;
+
+        record.compliance_percent =
+        ((yes / 16) * 100).toFixed(2);
+
+        const response = await fetch(
+            API_URL,
+            {
+                method : "POST",
+
+                headers : {
+                    "Content-Type" :
+                    "application/json"
+                },
+
+                body :
+                JSON.stringify(record)
+            }
+        );
+
+        const result =
+        await response.json();
+
+        if(result.status === "success"){
+
+            alert(
+                "บันทึกข้อมูลเรียบร้อย"
+            );
+
+            location.reload();
+
+        }else{
+
+            console.log(result);
+
+            alert(
+                "เกิดข้อผิดพลาดในการบันทึก"
+            );
+
+        }
+
+    }
+    catch(error){
+
+        console.error(error);
+
+        alert(
+            "เชื่อมต่อ Google Sheet ไม่สำเร็จ"
+        );
+
+    }
 
 }
 ```
