@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MDRO Audit</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+body{
+    background:#f4f6f9;
+}
+.card{
+    margin-bottom:15px;
+}
+</style>
+
+</head>
+<body>
+
+<div class="container py-4">
+
+<div class="card shadow">
+<div class="card-header bg-primary text-white">
+<h3>แบบประเมินการดูแลผู้ป่วยเชื้อดื้อยา (MDRO Audit)</h3>
+</div>
+
+<div class="card-body">
+
+<div class="row mb-3">
+
+<div class="col-md-3">
+<label>วันที่ประเมิน</label>
+<input type="date" id="auditDate" class="form-control">
+</div>
+
+<div class="col-md-3">
+<label>หอผู้ป่วย</label>
+<input type="text" id="ward" class="form-control">
+</div>
+
+<div class="col-md-3">
+<label>ผู้ประเมิน</label>
+<input type="text" id="auditor" class="form-control">
+</div>
+
+<div class="col-md-3">
+<label>ประเภทเชื้อ</label>
+<select id="organism" class="form-select">
+<option>MRSA</option>
+<option>CRE</option>
+<option>VRE</option>
+<option>CRAB</option>
+<option>MDR อื่นๆ</option>
+</select>
+</div>
+
+</div>
+
+<hr>
+
+<div id="checklist"></div>
+
+<div class="text-center mt-4">
+
+<button class="btn btn-success btn-lg"
+onclick="saveData()">
+บันทึกข้อมูล
+</button>
+
+<a href="dashboard.html"
+class="btn btn-primary btn-lg">
+Dashboard
+</a>
+
+</div>
+
+</div>
+</div>
+</div>
+
+<script>
+
+const checklist = [
+
+"แจ้ง ICN ทันทีเมื่อมีผู้ป่วยติดเชื้อดื้อยามาใช้บริการ โทร 102",
+
+"แจ้งบุคลากรทุกคนในหอผู้ป่วยทราบ",
+
+"แยกผู้ป่วยในห้องแยกหรือโซนติดเชื้อชนิดเดียวกัน",
+
+"ติดป้าย Contact precautions ที่เตียงหรือหน้าห้องผู้ป่วย",
+
+"ไม่วางสิ่งของและอุปกรณ์ของใช้บนเตียงผู้ป่วย",
+
+"แยกอุปกรณ์ของใช้ เช่น ปรอทวัดไข้ เครื่องวัดความดัน หูฟัง รวมทั้งอุปกรณ์ทำความสะอาดเฉพาะราย",
+
+"จัดเตรียม Alcohol gel hand rub ไว้ที่หน้าห้องผู้ป่วย/ปลายเตียงผู้ป่วย",
+
+"ล้างมือทุกครั้งก่อนและหลังสัมผัสผู้ป่วย",
+
+"สวม PPE ถูกต้อง",
+
+"แยกผ้าและขยะเป็นประเภทติดเชื้อ",
+
+"ทำความสะอาดสิ่งแวดล้อมด้วย POSEQUAT 5G",
+
+"เคลื่อนย้ายผู้ป่วยแจ้งหน่วยงานที่เกี่ยวข้อง",
+
+"พนักงานเปลปฏิบัติถูกต้อง",
+
+"จำกัดบุคลากร/ผู้เฝ้าไข้",
+
+"ให้คำแนะนำผู้ป่วยและญาติ",
+
+"ทำการเพาะเชื้อเพื่อยุติ Contact Precautions"
+
+];
+
+const div = document.getElementById("checklist");
+
+checklist.forEach((item,index)=>{
+
+div.innerHTML += `
+
+<div class="card">
+
+<div class="card-body">
+
+<b>${index+1}. ${item}</b>
+
+<div class="mt-2">
+
+<label class="me-3">
+<input type="radio"
+name="q${index}"
+value="YES">
+ปฏิบัติ
+</label>
+
+<label>
+<input type="radio"
+name="q${index}"
+value="NO">
+ไม่ปฏิบัติ
+</label>
+
+</div>
+
+</div>
+
+</div>
+
+`;
+
+});
+
+function saveData(){
+
+let record = {
+
+date:document.getElementById("auditDate").value,
+ward:document.getElementById("ward").value,
+auditor:document.getElementById("auditor").value,
+organism:document.getElementById("organism").value,
+answers:[]
+
+};
+
+for(let i=0;i<16;i++){
+
+let ans =
+document.querySelector(
+`input[name="q${i}"]:checked`
+);
+
+record.answers.push(
+ans ? ans.value : ""
+);
+
+}
+
+let data =
+JSON.parse(
+localStorage.getItem("mdroData") || "[]"
+);
+
+data.push(record);
+
+localStorage.setItem(
+"mdroData",
+JSON.stringify(data)
+);
+
+alert("บันทึกข้อมูลเรียบร้อย");
+
+location.reload();
+
+}
+
+</script>
+
+</body>
+</html>
