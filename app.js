@@ -1,14 +1,14 @@
-// ===============================
-// Google Apps Script URL
-// ===============================
+// =====================================
+// Google Apps Script Web App URL
+// =====================================
 
 const API_URL =
 "https://script.google.com/macros/s/AKfycbxFWuCunHJGn05HQRGd7L5bwZ23QDIpT4ZrqYWuqVhvqXdex8SZr6IVym5EltmTW5WSPg/exec";
 
 
-// ===============================
+// =====================================
 // Checklist
-// ===============================
+// =====================================
 
 const checklist = [
 
@@ -32,24 +32,25 @@ const checklist = [
 ];
 
 
-// ===============================
-// สร้างรายการประเมิน
-// ===============================
+// =====================================
+// Generate Checklist
+// =====================================
 
-const div = document.getElementById("checklist");
+const checklistDiv =
+document.getElementById("checklist");
 
-if(div){
+if (checklistDiv) {
 
-    checklist.forEach((item,index)=>{
+    checklist.forEach((item, index) => {
 
-        div.innerHTML += `
+        checklistDiv.innerHTML += `
 
         <div class="card mb-2 shadow-sm">
 
             <div class="card-body">
 
                 <div class="fw-bold mb-2">
-                    ${index+1}. ${item}
+                    ${index + 1}. ${item}
                 </div>
 
                 <label class="me-4">
@@ -85,13 +86,13 @@ if(div){
 }
 
 
-// ===============================
-// Save Data
-// ===============================
+// =====================================
+// Save Data To Google Sheet
+// =====================================
 
-async function saveData(){
+async function saveData() {
 
-    try{
+    try {
 
         const auditDate =
         document.getElementById("auditDate").value;
@@ -105,92 +106,93 @@ async function saveData(){
         const organism =
         document.getElementById("organism").value;
 
-        if(!auditDate){
+        if (!auditDate) {
 
             alert("กรุณาระบุวันที่ประเมิน");
 
             return;
-
         }
 
         let record = {
 
-            audit_date : auditDate,
-            ward : ward,
-            auditor : auditor,
-            organism : organism
+            audit_date: auditDate,
+            ward: ward,
+            auditor: auditor,
+            organism: organism
 
         };
 
         let yes = 0;
         let no = 0;
 
-        for(let i=0;i<16;i++){
+        for (let i = 0; i < 16; i++) {
 
             let answer = document.querySelector(
                 `input[name="q${i}"]:checked`
             );
 
-            if(!answer){
+            if (!answer) {
 
                 alert(
                     "กรุณาเลือกคำตอบข้อที่ " +
-                    (i+1)
+                    (i + 1)
                 );
 
                 return;
-
             }
 
             let value = answer.value;
 
-            record["check"+(i+1)] = value;
+            record["check" + (i + 1)] = value;
 
-            if(value==="YES") yes++;
-
-            if(value==="NO") no++;
-
+            if (value === "YES") yes++;
+            if (value === "NO") no++;
         }
 
         record.score_yes = yes;
         record.score_no = no;
 
         record.compliance_percent =
-        ((yes/16)*100).toFixed(2);
+        ((yes / 16) * 100).toFixed(2);
 
         console.log(record);
 
-        await fetch(API_URL,{
+        await fetch(API_URL, {
 
-            method:"POST",
+            method: "POST",
 
-            mode:"no-cors",
+            mode: "no-cors",
 
-            headers:{
-                "Content-Type":"application/json"
+            headers: {
+                "Content-Type":
+                "application/json"
             },
 
-            body:JSON.stringify(record)
+            body:
+            JSON.stringify(record)
 
         });
 
-        alert("บันทึกข้อมูลเรียบร้อย");
+        alert(
+            "บันทึกข้อมูลเรียบร้อย"
+        );
 
-        setTimeout(()=>{
+        setTimeout(() => {
+
             location.reload();
-        },1000);
+
+        }, 1000);
 
     }
-    catch(error){
+    catch (error) {
 
         console.error(error);
 
         alert(
-            "เกิดข้อผิดพลาดในการเชื่อมต่อ"
+            "ไม่สามารถเชื่อมต่อ Google Sheet ได้"
         );
 
     }
 
 }
-
 
