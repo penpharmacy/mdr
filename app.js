@@ -1,6 +1,5 @@
-```javascript
 // ===============================
-// Google Apps Script Web App URL
+// Google Apps Script URL
 // ===============================
 
 const API_URL =
@@ -8,93 +7,82 @@ const API_URL =
 
 
 // ===============================
-// MDRO Checklist
+// Checklist
 // ===============================
 
 const checklist = [
 
 "แจ้ง ICN ทันทีเมื่อมีผู้ป่วยติดเชื้อดื้อยามาใช้บริการ โทร 102",
-
 "แจ้งบุคลากรทุกคนในหอผู้ป่วยทราบ",
-
 "แยกผู้ป่วยในห้องแยกหรือโซนติดเชื้อชนิดเดียวกัน",
-
 "ติดป้าย Contact precautions ที่เตียงหรือหน้าห้องผู้ป่วย",
-
 "ไม่วางสิ่งของและอุปกรณ์ของใช้บนเตียงผู้ป่วย",
-
 "แยกอุปกรณ์ของใช้ เช่น ปรอทวัดไข้ เครื่องวัดความดัน หูฟัง รวมทั้งอุปกรณ์ทำความสะอาดเฉพาะรายต่อราย",
-
 "จัดเตรียม Alcohol gel hand rub ไว้ที่หน้าห้องผู้ป่วย/ปลายเตียงผู้ป่วย",
-
-"ล้างมือทุกครั้งก่อนและหลังสัมผัสผู้ป่วย หลังสัมผัสอุปกรณ์และสิ่งแวดล้อม",
-
-"สวมอุปกรณ์ป้องกันร่างกาย (PPE) ถูกต้อง",
-
+"ล้างมือทุกครั้งก่อนและหลังสัมผัสผู้ป่วย",
+"สวม PPE ถูกต้อง",
 "แยกผ้าและขยะเป็นประเภทติดเชื้อ",
-
 "ทำความสะอาดสิ่งแวดล้อมด้วย POSEQUAT 5G",
-
 "เคลื่อนย้ายผู้ป่วยแจ้งหน่วยงานที่เกี่ยวข้อง",
-
 "พนักงานเปลสวม PPE ถูกต้อง",
-
 "จำกัดบุคลากร/ผู้เฝ้าไข้",
-
 "ให้คำแนะนำผู้ป่วยและญาติ",
-
 "ทำการเพาะเชื้อเพื่อยุติ Contact Precautions"
 
 ];
 
 
 // ===============================
-// สร้าง Checklist
+// สร้างรายการประเมิน
 // ===============================
 
 const div = document.getElementById("checklist");
 
-checklist.forEach((item,index)=>{
+if(div){
 
-div.innerHTML += `
+    checklist.forEach((item,index)=>{
 
-<div class="card mb-2 shadow-sm">
+        div.innerHTML += `
 
-    <div class="card-body">
+        <div class="card mb-2 shadow-sm">
 
-        <div class="fw-bold mb-2">
-            ${index+1}. ${item}
+            <div class="card-body">
+
+                <div class="fw-bold mb-2">
+                    ${index+1}. ${item}
+                </div>
+
+                <label class="me-4">
+
+                    <input
+                        type="radio"
+                        name="q${index}"
+                        value="YES">
+
+                    ปฏิบัติ
+
+                </label>
+
+                <label>
+
+                    <input
+                        type="radio"
+                        name="q${index}"
+                        value="NO">
+
+                    ไม่ปฏิบัติ
+
+                </label>
+
+            </div>
+
         </div>
 
-        <label class="me-4">
+        `;
 
-            <input
-                type="radio"
-                name="q${index}"
-                value="YES">
+    });
 
-            ปฏิบัติ
-
-        </label>
-
-        <label>
-
-            <input
-                type="radio"
-                name="q${index}"
-                value="NO">
-
-            ไม่ปฏิบัติ
-
-        </label>
-
-    </div>
-
-</div>
-
-`;
-
-});
+}
 
 
 // ===============================
@@ -158,54 +146,39 @@ async function saveData(){
 
             record["check"+(i+1)] = value;
 
-            if(value === "YES") yes++;
+            if(value==="YES") yes++;
 
-            if(value === "NO") no++;
+            if(value==="NO") no++;
 
         }
 
         record.score_yes = yes;
-
         record.score_no = no;
 
         record.compliance_percent =
-        ((yes / 16) * 100).toFixed(2);
+        ((yes/16)*100).toFixed(2);
 
-        const response = await fetch(
-            API_URL,
-            {
-                method : "POST",
+        console.log(record);
 
-                headers : {
-                    "Content-Type" :
-                    "application/json"
-                },
+        await fetch(API_URL,{
 
-                body :
-                JSON.stringify(record)
-            }
-        );
+            method:"POST",
 
-        const result =
-        await response.json();
+            mode:"no-cors",
 
-        if(result.status === "success"){
+            headers:{
+                "Content-Type":"application/json"
+            },
 
-            alert(
-                "บันทึกข้อมูลเรียบร้อย"
-            );
+            body:JSON.stringify(record)
 
+        });
+
+        alert("บันทึกข้อมูลเรียบร้อย");
+
+        setTimeout(()=>{
             location.reload();
-
-        }else{
-
-            console.log(result);
-
-            alert(
-                "เกิดข้อผิดพลาดในการบันทึก"
-            );
-
-        }
+        },1000);
 
     }
     catch(error){
@@ -213,11 +186,11 @@ async function saveData(){
         console.error(error);
 
         alert(
-            "เชื่อมต่อ Google Sheet ไม่สำเร็จ"
+            "เกิดข้อผิดพลาดในการเชื่อมต่อ"
         );
 
     }
 
 }
-```
+
 
