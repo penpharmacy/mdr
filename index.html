@@ -28,6 +28,27 @@
     <!-- Toast Notification Container -->
     <div id="toast-container" class="fixed top-4 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
+    <!-- Custom Beautiful Modal Dialog (Replacement for alert/confirm) -->
+    <div id="custom-confirm-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm hidden">
+        <div class="bg-white rounded-3xl p-6 max-w-sm w-full border border-slate-100 shadow-2xl transform transition-all duration-200">
+            <div class="flex items-center gap-3 border-b border-slate-100 pb-3 mb-4">
+                <div id="modal-icon-container" class="p-2 rounded-xl">
+                    <!-- Dynamic Lucide Icon -->
+                </div>
+                <h3 id="modal-title" class="text-sm font-extrabold text-slate-800">ยืนยันการดำเนินการ</h3>
+            </div>
+            <p id="modal-message" class="text-xs text-slate-500 leading-relaxed mb-6">ข้อความสำหรับผู้ใช้งาน...</p>
+            <div class="flex justify-end gap-2 text-xs">
+                <button id="modal-btn-cancel" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl font-bold transition-all">
+                    ยกเลิก
+                </button>
+                <button id="modal-btn-confirm" class="px-5 py-2 text-white rounded-xl font-extrabold transition-all shadow-md transform active:scale-95">
+                    ตกลง
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Header Banner with bright, vibrant gradient -->
     <header class="bg-gradient-to-r from-cyan-500 via-teal-500 to-indigo-600 text-white shadow-lg">
         <div class="max-w-7xl mx-auto px-4 py-5 sm:px-6 lg:px-8">
@@ -46,6 +67,9 @@
                 
                 <!-- Quick Actions with vibrant emerald colors -->
                 <div class="flex flex-wrap items-center gap-2">
+                    <button onclick="fetchDataFromGoogleSheets()" class="inline-flex items-center gap-2 px-4 py-2.5 bg-white/10 hover:bg-white/20 active:bg-white/30 text-white border border-white/10 text-sm font-bold rounded-xl shadow-md transition-all">
+                        <i data-lucide="refresh-cw" class="w-4 h-4 text-cyan-200" id="sync-spinner"></i> ซิงค์ดึงข้อมูลล่าสุด
+                    </button>
                     <button onclick="openNewAuditForm()" class="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-emerald-400 to-teal-400 hover:from-emerald-500 hover:to-teal-500 text-white text-sm font-extrabold rounded-xl shadow-lg hover:shadow-xl transition-all transform active:scale-95 border border-white/10">
                         <i data-lucide="plus" class="w-4 h-4"></i> เริ่มประเมินใหม่
                     </button>
@@ -102,7 +126,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                     <div>
                         <label class="block text-xs font-extrabold text-slate-500 mb-1.5">รูปแบบการกรอง</label>
-                        <select id="filter-type" onchange="toggleFilterInputs()" class="w-full bg-slate-55 border border-slate-200 rounded-xl px-3 py-2 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-cyan-400 focus:border-cyan-400">
+                        <select id="filter-type" onchange="toggleFilterInputs()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-cyan-400 focus:border-cyan-400">
                             <option value="all">แสดงข้อมูลทั้งหมด</option>
                             <option value="year">เลือกรายปี</option>
                             <option value="range">เลือกช่วงวันที่กำหนดเอง</option>
@@ -111,7 +135,7 @@
                     
                     <div id="filter-year-container" class="hidden">
                         <label class="block text-xs font-extrabold text-slate-500 mb-1.5">ปี พ.ศ. (ค.ศ.)</label>
-                        <select id="filter-year" onchange="applyFilters()" class="w-full bg-slate-55 border border-slate-200 rounded-xl px-3 py-2 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-cyan-400">
+                        <select id="filter-year" onchange="applyFilters()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-cyan-400">
                             <option value="2026">2569 (2026)</option>
                             <option value="2025">2568 (2025)</option>
                             <option value="2024">2567 (2024)</option>
@@ -120,12 +144,12 @@
                     
                     <div id="filter-start-container" class="hidden">
                         <label class="block text-xs font-extrabold text-slate-500 mb-1.5">ตั้งแต่วันที่</label>
-                        <input type="date" id="filter-start-date" onchange="applyFilters()" class="w-full bg-slate-55 border border-slate-200 rounded-xl px-3 py-2 text-sm font-medium text-slate-700 focus:ring-2 focus:ring-cyan-400">
+                        <input type="date" id="filter-start-date" onchange="applyFilters()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-medium text-slate-700 focus:ring-2 focus:ring-cyan-400">
                     </div>
                     
                     <div id="filter-end-container" class="hidden">
                         <label class="block text-xs font-extrabold text-slate-500 mb-1.5">ถึงวันที่</label>
-                        <input type="date" id="filter-end-date" onchange="applyFilters()" class="w-full bg-slate-55 border border-slate-200 rounded-xl px-3 py-2 text-sm font-medium text-slate-700 focus:ring-2 focus:ring-cyan-400">
+                        <input type="date" id="filter-end-date" onchange="applyFilters()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-medium text-slate-700 focus:ring-2 focus:ring-cyan-400">
                     </div>
 
                     <div class="flex gap-2">
@@ -178,13 +202,11 @@
                 </div>
             </div>
 
-            <!-- ==========================================================
-                HORIZONTAL BAR CHART (ผลการปฏิบัติรายข้อ)
-               ========================================================== -->
+            <!-- HORIZONTAL BAR CHART -->
             <div class="bg-white p-6 sm:p-8 rounded-3xl shadow-md border border-slate-100">
                 <div class="border-b border-slate-100 pb-3 mb-6">
                     <h3 class="text-lg font-extrabold text-slate-800">แผนภูมิผลการปฏิบัติรายข้อ</h3>
-                    <p class="text-xs text-slate-500 mt-0.5">เปอร์เซ็นต์การปฏิบัติถูกต้องแยกรายข้อ (ความสดใสของแถบสะท้อนสถิติในการดูแลผู้ป่วย)</p>
+                    <p class="text-xs text-slate-550 mt-0.5">เปอร์เซ็นต์การปฏิบัติถูกต้องแยกรายข้อ (ความสดใสของแถบสะท้อนสถิติในการดูแลผู้ป่วย)</p>
                 </div>
 
                 <!-- Chart Wrapper with Grid System -->
@@ -215,7 +237,7 @@
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-2">
-                <!-- TOP 5 PROBLEMS with striking bright pink colors -->
+                <!-- TOP 5 PROBLEMS -->
                 <div class="bg-white p-6 rounded-3xl shadow-md border border-rose-100 lg:col-span-1 flex flex-col justify-between">
                     <div>
                         <div class="border-b border-rose-100 pb-3 mb-4">
@@ -231,7 +253,7 @@
                     </div>
                 </div>
 
-                <!-- SUMMARY TABLE & PERCENTAGE 1-16 with clear vibrant indicators -->
+                <!-- SUMMARY TABLE & PERCENTAGE 1-16 -->
                 <div class="bg-white p-6 rounded-3xl shadow-md border border-slate-100 lg:col-span-2">
                     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-slate-100 pb-3 mb-4 gap-2">
                         <div>
@@ -239,8 +261,8 @@
                             <p class="text-[11px] text-slate-400 mt-0.5">วิเคราะห์อัตราการปฏิบัติตามมาตรฐานอย่างโปร่งใส</p>
                         </div>
                         <div class="flex items-center gap-3 text-[10px] font-bold">
-                            <span class="flex items-center gap-1 text-slate-500"><span class="w-2.5 h-2.5 bg-emerald-500 rounded-full"></span>ปฏิบัติ</span>
-                            <span class="flex items-center gap-1 text-slate-500"><span class="w-2.5 h-2.5 bg-rose-400 rounded-full"></span>ไม่ปฏิบัติ</span>
+                            <span class="flex items-center gap-1 text-slate-550"><span class="w-2.5 h-2.5 bg-emerald-500 rounded-full"></span>ปฏิบัติ</span>
+                            <span class="flex items-center gap-1 text-slate-550"><span class="w-2.5 h-2.5 bg-rose-400 rounded-full"></span>ไม่ปฏิบัติ</span>
                         </div>
                     </div>
 
@@ -267,7 +289,7 @@
                     </div>
                     
                     <div class="max-w-xs space-y-1.5">
-                        <label class="block text-xs font-extrabold text-slate-500 uppercase">วันที่ทำการตรวจประเมิน (audit_date)</label>
+                        <label class="block text-xs font-extrabold text-slate-550 uppercase">วันที่ทำการตรวจประเมิน (audit_date)</label>
                         <input type="date" id="input-eval-date" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:bg-white transition-all" />
                     </div>
                 </div>
@@ -333,8 +355,21 @@
                         <i data-lucide="file-spreadsheet" class="w-6 h-6"></i>
                     </div>
                     <div>
-                        <h3 class="text-lg font-extrabold text-slate-800">การเชื่อมต่อชุดข้อมูลเข้า Google Sheets (แผ่นงาน: AuditData)</h3>
-                        <p class="text-xs text-slate-400">จับคู่และปรับฟอร์แมตอัตโนมัติ สวยงาม เข้าใจง่าย ผ่าน Google Apps Script</p>
+                        <h3 class="text-lg font-extrabold text-slate-800">การเชื่อมต่อชุดข้อมูลเข้า Google Sheets (สเปรดชีต: MDRO_AUDIT)</h3>
+                        <p class="text-xs text-slate-550">ส่งสถิติจำลองและสถิติจริงเชื่อมไปยังเว็บบุ๊กแบบรวดเร็วและปลอดภัย เข้าแผ่นงาน: <strong>AuditData</strong></p>
+                    </div>
+                </div>
+
+                <!-- Google Sheet Reference Alert -->
+                <div class="p-4 bg-cyan-50/70 border border-cyan-100 rounded-2xl flex items-start gap-3">
+                    <i data-lucide="info" class="w-5 h-5 text-cyan-600 mt-0.5 flex-shrink-0"></i>
+                    <div class="text-xs text-cyan-800 leading-relaxed">
+                        <p class="font-extrabold mb-1">สเปรดชีตเป้าหมายหลัก:</p>
+                        <a href="https://docs.google.com/spreadsheets/d/1Y09EI4c0qPts8E7vet2_tWAjVdeT6c1xreChlTSHKQU/edit#gid=0" target="_blank" class="font-bold underline text-indigo-600 hover:text-indigo-800 flex items-center gap-1">
+                            MDRO_AUDIT - Google ชีต (คลิกเพื่อเปิดดูสเปรดชีตของคุณ)
+                            <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                        </a>
+                        <p class="mt-1 opacity-90">ข้อมูลการบันทึกของคุณจะซิงค์ลงในแท็บแผ่นงานชื่อ <strong class="underline">"AuditData"</strong> อัตโนมัติเมื่อกำหนดค่า Webhook สำเร็จ</p>
                     </div>
                 </div>
 
@@ -344,181 +379,89 @@
                     </h4>
                     <div class="space-y-3">
                         <div class="space-y-1.5">
-                            <label class="text-xs font-extrabold text-slate-500 uppercase">Google Apps Script Web App URL</label>
+                            <label class="text-xs font-extrabold text-slate-550 uppercase">Google Apps Script Web App URL</label>
                             <input type="url" id="webhook-url-input" oninput="saveWebhookSettings()" placeholder="https://script.google.com/macros/s/.../exec" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-cyan-400" />
                         </div>
                         <div class="flex items-center gap-3">
                             <label class="relative inline-flex items-center cursor-pointer">
                                 <input type="checkbox" id="auto-sync-checkbox" onchange="saveWebhookSettings()" class="sr-only peer">
                                 <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
-                                <span class="ml-3 text-xs font-bold text-slate-600">ซิงค์บันทึกขึ้น Google Sheet อัตโนมัติทันที</span>
+                                <span class="ml-3 text-xs font-bold text-slate-600 font-sans">ซิงค์บันทึกขึ้น Google Sheet อัตโนมัติทันทีที่บันทึกข้อมูล</span>
                             </label>
                         </div>
                         <div class="flex gap-2 pt-2">
                             <button onclick="syncAllToWebhook()" class="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-indigo-500 to-cyan-500 hover:from-indigo-600 hover:to-cyan-600 text-white rounded-xl text-xs font-extrabold transition-all shadow-md">
-                                <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> ซิงค์ส่งชุดข้อมูลทั้งหมดขึ้น Google Sheet
+                                <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> ส่งออกข้อมูลตามตัวกรองปัจจุบันขึ้น Google Sheet (ทั้งหมดในคราวเดียว)
                             </button>
                         </div>
                     </div>
                 </div>
 
-                <!-- Instruction block containing the updated Apps Script code with beautiful auto formatting -->
+                <!-- Instruction block -->
                 <div class="space-y-4">
                     <h4 class="text-sm font-extrabold text-slate-700 flex items-center gap-1.5">
-                        <i data-lucide="code" class="w-4 h-4 text-cyan-600"></i> 2. ซอร์สโค้ด Google Apps Script สำหรับแท็บแผ่นงาน `AuditData` (ปรับแต่งสีสันและฟอร์แมตภาษาไทยอัตโนมัติ)
+                        <i data-lucide="code" class="w-4 h-4 text-cyan-600"></i> 2. ซอร์สโค้ด Google Apps Script (ติดตั้งบนระบบชีตสเปรดชีตคุณ)
                     </h4>
-                    <p class="text-xs text-slate-550">นำรหัสโค้ดที่ได้รับการพัฒนาให้จัดรูปแบบสีสันและแสดงผลภาษาไทยอย่างเป็นระบบชุดนี้ ไปติดตั้งในเมนู **Extensions > Apps Script** เพื่อสร้างตารางแดชบอร์ดที่สมบูรณ์แบบบน Spreadsheet ของคุณ:</p>
+                    <p class="text-xs text-slate-550">คุณสามารถติดตั้งฟังก์ชัน <strong>doGet</strong> และ <strong>doPost</strong> เวอร์ชันปรับปรุงล่าสุดนี้บน Apps Script เพื่อส่งผ่านข้อมูลประเมินแบบ 2 ทิศทาง ทำให้สามารถใช้งานข้อมูลชุดเดียวกันได้จากทุกเครื่อง:</p>
                     <div class="bg-slate-900 text-slate-100 p-4 rounded-xl font-mono text-[11px] overflow-x-auto border border-slate-800 shadow-inner">
-                        <pre>function doPost(e) {
+                        <pre>function doGet(e) {
   try {
-    var params = JSON.parse(e.postData.contents);
     var ss = SpreadsheetApp.getActiveSpreadsheet();
     var sheet = ss.getSheetByName("AuditData");
+    if (!sheet) return ContentService.createTextOutput(JSON.stringify([])).setMimeType(ContentService.MimeType.JSON);
     
-    var isNew = false;
-    if (!sheet) {
-      sheet = ss.insertSheet("AuditData");
-      isNew = true;
+    var rows = sheet.getDataRange().getValues();
+    if (rows.length &lt;= 1) return ContentService.createTextOutput(JSON.stringify([])).setMimeType(ContentService.MimeType.JSON);
+    
+    var data = [];
+    for (var i = 1; i &lt; rows.length; i++) {
+      var row = rows[i];
+      var evalDateStr = "";
+      if (row[1]) {
+        if (row[1] instanceof Date) {
+          var y = row[1].getFullYear();
+          var m = ("0" + (row[1].getMonth() + 1)).slice(-2);
+          var d = ("0" + row[1].getDate()).slice(-2);
+          evalDateStr = y + "-" + m + "-" + d;
+        } else {
+          evalDateStr = String(row[1]).split("T")[0];
+        }
+      }
+      
+      var checklist = {};
+      var totalNA = 0;
+      for (var j = 1; j &lt;= 16; j++) {
+        var statusText = row[j + 1];
+        var status = "na";
+        if (statusText === "ปฏิบัติ") status = "yes";
+        else if (statusText === "ไม่ปฏิบัติ") status = "no";
+        checklist[j] = status;
+        if (status === "na") totalNA++;
+      }
+      
+      var complianceRate = 0;
+      if (row[20] !== undefined && row[20] !== "") {
+        complianceRate = parseFloat((row[20] * 100).toFixed(1));
+      }
+      
+      data.push({
+        id: "sheet_" + i + "_" + new Date(row[0]).getTime(),
+        evalDate: evalDateStr,
+        checklist: checklist,
+        notes: {}, 
+        generalNotes: row[21] || "",
+        complianceRate: complianceRate,
+        totalComplied: parseInt(row[18]) || 0,
+        totalNotComplied: parseInt(row[19]) || 0,
+        totalApplicable: (parseInt(row[18]) || 0) + (parseInt(row[19]) || 0),
+        totalNA: totalNA
+      });
     }
-    
-    // ตั้งชื่อหัวคอลัมน์ภาษาไทยระบุตัวข้อชัดเจนเพื่อให้อ่านง่ายสไตล์ Dashboard
-    var headers = [
-      "วันเวลาบันทึก (Timestamp)", 
-      "วันที่ประเมิน (Audit Date)", 
-      "1. แจ้ง ICN ทันที", 
-      "2. แจ้งบุคลากรทราบ", 
-      "3. แยกผู้ป่วย/โซน", 
-      "4. ติดป้าย Contact precautions", 
-      "5. ไม่วางของบนเตียง", 
-      "6. แยกอุปกรณ์ของใช้", 
-      "7. เตรียม Alcohol gel", 
-      "8. ล้างมือด้วยน้ำยา 4% CHG", 
-      "9. สวม PPE (ถุงมือ/เสื้อคลุม/Mask)", 
-      "10. แยกผ้าและขยะติดเชื้อ", 
-      "11. ทำความสะอาดสิ่งแวดล้อม", 
-      "12. เคลื่อนย้ายแจ้งหน่วยงาน", 
-      "13. พนักงานเปลสวม PPE", 
-      "14. จำกัดบุคลากร/ผู้เฝ้าไข้", 
-      "15. แนะนำผู้ป่วยและญาติ", 
-      "16. ทำการเพาะเชื้อเพื่อยุติ", 
-      "ปฏิบัติ (YES)", 
-      "ไม่ปฏิบัติ (NO)", 
-      "อัตราปฏิบัติถูกต้อง (Compliance %)", 
-      "บันทึกเพิ่มเติมภาพรวม (generalNotes)"
-    ];
-    
-    if (isNew || sheet.getLastRow() === 0) {
-      sheet.appendRow(headers);
-      formatHeaderAndApplyRules(sheet);
-    }
-    
-    // แมปสถานะเป็นภาษาไทยเพื่อง่ายต่อการสรุปผลและดูสถิติ
-    function mapStatus(val) {
-      if (val === "yes") return "ปฏิบัติ";
-      if (val === "no") return "ไม่ปฏิบัติ";
-      return "ไม่เกี่ยวข้อง (N/A)";
-    }
-    
-    var rowData = [
-      new Date(),
-      params.audit_date || "",
-      mapStatus(params.check1),
-      mapStatus(params.check2),
-      mapStatus(params.check3),
-      mapStatus(params.check4),
-      mapStatus(params.check5),
-      mapStatus(params.check6),
-      mapStatus(params.check7),
-      mapStatus(params.check8),
-      mapStatus(params.check9),
-      mapStatus(params.check10),
-      mapStatus(params.check11),
-      mapStatus(params.check12),
-      mapStatus(params.check13),
-      mapStatus(params.check14),
-      mapStatus(params.check15),
-      mapStatus(params.check16),
-      params.score_yes || 0,
-      params.score_no || 0,
-      parseFloat(params.compliance_percent || 0) / 100, // ส่งเป็นค่าทศนิยมสำหรับจัดฟอร์แมต % ในชีต
-      params.generalNotes || ""
-    ];
-    
-    sheet.appendRow(rowData);
-    
-    // ตั้งค่าฟอร์แมตตัวเลขคอลัมน์ % ให้เป็นสากลใน Google Sheet
-    var lastRow = sheet.getLastRow();
-    sheet.getRange(lastRow, 21).setNumberFormat("0.0%");
-    sheet.getRange(lastRow, 1, 1, sheet.getLastColumn()).setVerticalAlignment("middle");
-    
-    return ContentService.createTextOutput(JSON.stringify({result: "success"}))
-      .setMimeType(ContentService.MimeType.JSON);
+    data.sort(function(a, b) { return new Date(b.evalDate) - new Date(a.evalDate); });
+    return ContentService.createTextOutput(JSON.stringify(data)).setMimeType(ContentService.MimeType.JSON);
   } catch(err) {
-    return ContentService.createTextOutput(JSON.stringify({result: "error", error: err.toString()}))
-      .setMimeType(ContentService.MimeType.JSON);
+    return ContentService.createTextOutput(JSON.stringify({result: "error", error: err.toString()})).setMimeType(ContentService.MimeType.JSON);
   }
-}
-
-// ฟังก์ชันตกแต่งชีตและใช้กฎจัดกลุ่มเฉดสีอัตโนมัติ (Vibrant Cyan & Smart Status colors)
-function formatHeaderAndApplyRules(sheet) {
-  var headerRange = sheet.getRange(1, 1, 1, 22);
-  headerRange.setBackground("#0891b2") // โทนสีฟ้าครามสดใส (Cyan 600) ให้ความรู้สึกเป็นแอปการแพทย์สมัยใหม่
-             .setFontColor("#ffffff")
-             .setFontWeight("bold")
-             .setHorizontalAlignment("center")
-             .setVerticalAlignment("middle")
-             .setWrap(true);
-             
-  sheet.setRowHeight(1, 42);
-  sheet.setFrozenRows(1);
-  sheet.setFrozenColumns(2); // ตรึงคอลัมน์เวลาและวันที่ประเมิน
-  
-  // ปรับความกว้างของคอลัมน์ให้เหมาะกับขนาดคำอธิบายภาษาไทย
-  sheet.autoResizeColumns(1, 22);
-  
-  var rules = [];
-  
-  // กฎ 1: คำว่า "ปฏิบัติ" -> แสดงแถบสีเขียวอ่อนมีชีวิตชีวา
-  rules.push(SpreadsheetApp.newConditionalFormatRule()
-    .whenTextEqualTo("ปฏิบัติ")
-    .setBackground("#d1fae5")
-    .setFontColor("#065f46")
-    .setRanges([sheet.getRange("C2:R1000")])
-    .build());
-    
-  // กฎ 2: คำว่า "ไม่ปฏิบัติ" -> แสดงแถบสีแดงอ่อนเพื่อส่งสัญญาณเฝ้าระวัง
-  rules.push(SpreadsheetApp.newConditionalFormatRule()
-    .whenTextEqualTo("ไม่ปฏิบัติ")
-    .setBackground("#ffe4e6")
-    .setFontColor("#9f1239")
-    .setRanges([sheet.getRange("C2:R1000")])
-    .build());
-    
-  // กฎ 3: คำว่า "ไม่เกี่ยวข้อง (N/A)" -> ปรับเป็นเฉดสีเทาสะอาดตา
-  rules.push(SpreadsheetApp.newConditionalFormatRule()
-    .whenTextEqualTo("ไม่เกี่ยวข้อง (N/A)")
-    .setBackground("#f1f5f9")
-    .setFontColor("#64748b")
-    .setRanges([sheet.getRange("C2:R1000")])
-    .build());
-    
-  // กฎ 4: คะแนนรวมอัตราการปฏิบัติต้องผ่านเกณฑ์ >= 80% เป็นสีเขียวเข้มเด่น
-  rules.push(SpreadsheetApp.newConditionalFormatRule()
-    .whenNumberGreaterThanOrEqualTo(0.8)
-    .setBackground("#d1fae5")
-    .setFontColor("#065f46")
-    .setRanges([sheet.getRange("U2:U1000")])
-    .build());
-    
-  // กฎ 5: คะแนนรวมต่ำกว่าเกณฑ์ < 50% เป็นสีแดงเน้นย้ำเพื่อให้ได้รับการแก้ด่วน
-  rules.push(SpreadsheetApp.newConditionalFormatRule()
-    .whenNumberLessThan(0.5)
-    .setBackground("#ffe4e6")
-    .setFontColor("#9f1239")
-    .setRanges([sheet.getRange("U2:U1000")])
-    .build());
-    
-  sheet.setConditionalFormatRules(rules);
 }</pre>
                     </div>
                 </div>
@@ -528,10 +471,10 @@ function formatHeaderAndApplyRules(sheet) {
     </main>
 
     <!-- Footer -->
-    <footer class="bg-slate-900 text-slate-400 py-6 text-center border-t border-slate-800 text-xs">
+    <footer class="bg-slate-900 text-slate-400 py-6 text-center border-t border-slate-800 text-xs mt-auto">
         <div class="max-w-7xl mx-auto px-4 space-y-1">
             <p>© 2026 โรงพยาบาลพุนพิน จังหวัดสุราษฎร์ธานี • ระบบเวอร์ชันบันทึกประเมินด่วนแบบย่อ</p>
-            <p class="text-slate-550 font-medium">
+            <p class="text-slate-500 font-medium">
                 อ้างอิงเกณฑ์การป้องกันควบคุมการติดเชื้อจากสถาบันบำราศนราดูร • แผนก ICN
             </p>
         </div>
@@ -541,6 +484,12 @@ function formatHeaderAndApplyRules(sheet) {
         APPLICATION JAVASCRIPT (CORE LOGIC)
        ========================================== -->
     <script>
+        // ----------------------------------------------------
+        // CONFIGURATION: สามารถคัดลอกลิงก์ Web App URL จาก Google Apps Script 
+        // มาวางในตัวแปรด้านล่างนี้ได้เลย เพื่อให้ทุกเครื่องเข้าถึงข้อมูลร่วมกันโดยไม่ต้องตั้งค่าทีละเครื่อง!
+        // ----------------------------------------------------
+        const HARDCODED_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycby0gcgQQh9fg3S7JKbGEf06X-VC7IFeo5Q8uyNSlZB3LqnsVxfi9nZ9bx3-vJTCnChXng/exec"; 
+
         const CHECKLIST_ITEMS = [
             { id: 1, text: "แจ้ง ICN ทันทีเมื่อมีผู้ป่วยติดเชื้อดื้อยามาใช้บริการ โทร 102" },
             { id: 2, text: "แจ้งบุคลากรทุกคนในหอผู้ป่วยทราบ" },
@@ -569,6 +518,53 @@ function formatHeaderAndApplyRules(sheet) {
         let formAnswers = {};
         let formNotes = {};
 
+        // Custom Beautiful Modal Confirm Promise Function
+        function customConfirm(title, message, isDanger = false) {
+            return new Promise((resolve) => {
+                const modal = document.getElementById('custom-confirm-modal');
+                const titleEl = document.getElementById('modal-title');
+                const msgEl = document.getElementById('modal-message');
+                const iconContainer = document.getElementById('modal-icon-container');
+                const btnConfirm = document.getElementById('modal-btn-confirm');
+                const btnCancel = document.getElementById('modal-btn-cancel');
+
+                titleEl.innerText = title;
+                msgEl.innerText = message;
+
+                if (isDanger) {
+                    iconContainer.className = "bg-rose-50 p-2 rounded-xl text-rose-600 border border-rose-100";
+                    iconContainer.innerHTML = '<i data-lucide="alert-triangle" class="w-5 h-5"></i>';
+                    btnConfirm.className = "px-5 py-2 bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white rounded-xl font-extrabold transition-all shadow-md transform active:scale-95";
+                } else {
+                    iconContainer.className = "bg-cyan-50 p-2 rounded-xl text-cyan-600 border border-cyan-100";
+                    iconContainer.innerHTML = '<i data-lucide="help-circle" class="w-5 h-5"></i>';
+                    btnConfirm.className = "px-5 py-2 bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-600 hover:to-indigo-700 text-white rounded-xl font-extrabold transition-all shadow-md transform active:scale-95";
+                }
+
+                lucide.createIcons();
+                modal.classList.remove('hidden');
+
+                const onConfirmClick = () => {
+                    cleanup();
+                    resolve(true);
+                };
+
+                const onCancelClick = () => {
+                    cleanup();
+                    resolve(false);
+                };
+
+                const cleanup = () => {
+                    modal.classList.add('hidden');
+                    btnConfirm.removeEventListener('click', onConfirmClick);
+                    btnCancel.removeEventListener('click', onCancelClick);
+                };
+
+                btnConfirm.addEventListener('click', onConfirmClick);
+                btnCancel.addEventListener('click', onCancelClick);
+            });
+        }
+
         window.onload = function() {
             loadAuditsFromStorage();
             loadWebhookSettings();
@@ -582,14 +578,47 @@ function formatHeaderAndApplyRules(sheet) {
             
             applyFilters();
             lucide.createIcons();
+
+            // ดึงข้อมูลล่าสุดจาก Google Sheets ทันทีที่เปิดแอป (ถ้ามีการตั้งค่า Webhook)
+            fetchDataFromGoogleSheets();
         };
+
+        // ฟังก์ชันดึงข้อมูลจาก Google Sheets เพื่ออัปเดต แดชบอร์ด และประวัติ ให้ตรงกันทุกเครื่อง
+        async function fetchDataFromGoogleSheets() {
+            const webhookUrl = localStorage.getItem('mdro_webhook_url') || HARDCODED_WEBHOOK_URL;
+            if (!webhookUrl) {
+                // หากยังไม่มี Webhook ให้ทำงานจาก Local Cache ของเครื่องนั้นไปก่อน
+                return;
+            }
+
+            const spinner = document.getElementById('sync-spinner');
+            if (spinner) spinner.classList.add('animate-spin');
+
+            try {
+                const response = await fetch(webhookUrl);
+                if (!response.ok) throw new Error("ไม่สามารถเรียกขอข้อมูลจาก Google Sheets ได้");
+                const cloudData = await response.json();
+                
+                if (cloudData && Array.isArray(cloudData)) {
+                    audits = cloudData;
+                    saveAuditsToStorage(); // บันทึกสถิติท้องถิ่นร่วมด้วยเผื่อเปิดออฟไลน์
+                    applyFilters();
+                    showToast("ซิงค์ดึงข้อมูลล่าสุดจาก Google Sheets (AuditData) เรียบร้อย", "success");
+                }
+            } catch (err) {
+                console.error("Fetch Google Sheets Error: ", err);
+                showToast("ไม่สามารถซิงค์ดึงข้อมูลจากชีตได้โดยอัตโนมัติ (ตรวจสอบสิทธิ์การตั้งค่า Web App)", "error");
+            } finally {
+                if (spinner) spinner.classList.remove('animate-spin');
+            }
+        }
 
         function loadAuditsFromStorage() {
             const raw = localStorage.getItem('mdro_audits');
             if (raw) {
                 audits = JSON.parse(raw);
             } else {
-                // Populate realistic mock data to match the design (without ward, auditor, organism)
+                // ข้อมูลสถิติจำลองพื้นฐาน
                 const mockData = [
                     {
                         id: "mock-1",
@@ -606,14 +635,6 @@ function formatHeaderAndApplyRules(sheet) {
                         notes: {},
                         generalNotes: "ยอดเยี่ยม ปฏิบัติถูกต้องครบ 100%",
                         complianceRate: 100.0, totalApplicable: 16, totalComplied: 16, totalNotComplied: 0, totalNA: 0
-                    },
-                    {
-                        id: "mock-3",
-                        evalDate: "2025-04-12",
-                        checklist: {1:'yes', 2:'no', 3:'yes', 4:'no', 5:'no', 6:'yes', 7:'yes', 8:'no', 9:'yes', 10:'yes', 11:'no', 12:'yes', 13:'yes', 14:'yes', 15:'na', 16:'na'},
-                        notes: {},
-                        generalNotes: "ข้อมูลสถิติรอบปี 2568",
-                        complianceRate: 64.3, totalApplicable: 14, totalComplied: 9, totalNotComplied: 5, totalNA: 2
                     }
                 ];
                 audits = mockData;
@@ -626,21 +647,36 @@ function formatHeaderAndApplyRules(sheet) {
             document.getElementById('count-badge').innerText = audits.length;
         }
 
-        function clearAllData() {
-            if (confirm("คุณต้องการลบสถิติข้อมูลทั้งหมดใน LocalStorage บนเครื่องนี้ใช่หรือไม่? (ข้อมูลจะถูกรีเซ็ตใหม่)")) {
+        async function clearAllData() {
+            const confirmed = await customConfirm(
+                "รีเซ็ตล้างข้อมูลสถิติ", 
+                "คุณแน่ใจใช่หรือไม่ว่าต้องการลบข้อมูลประเมินทั้งหมดในเครื่องนี้? ข้อมูลใน Google Sheets จะยังคงอยู่ แต่สถิติท้องถิ่นจะถูกล้าง", 
+                true
+            );
+            if (confirmed) {
                 localStorage.removeItem('mdro_audits');
                 audits = [];
                 saveAuditsToStorage();
                 applyFilters();
-                showToast("ล้างข้อมูลเรียบร้อยแล้ว ระบบกลับสู่ค่าเริ่มต้น", "info");
+                showToast("ระบบสถิติส่วนบุคคลถูกรีเซ็ตเรียบร้อยแล้ว", "info");
             }
         }
 
         function loadWebhookSettings() {
             const savedUrl = localStorage.getItem('mdro_webhook_url');
             const savedAuto = localStorage.getItem('mdro_auto_sync');
-            if (savedUrl) document.getElementById('webhook-url-input').value = savedUrl;
-            if (savedAuto === 'true') document.getElementById('auto-sync-checkbox').checked = true;
+            
+            // ใช้ค่าจาก Hardcoded Webhook URL หากไม่ได้ระบุไว้ใน Local Storage
+            const activeUrl = savedUrl || HARDCODED_WEBHOOK_URL;
+            if (activeUrl) document.getElementById('webhook-url-input').value = activeUrl;
+            
+            // ตั้งค่า Auto-Sync เป็น True เสมอเพื่อตอบโจทย์ "เก็บข้อมูลในชีตตลอดเวลาไม่ว่าจะเครื่องไหน"
+            if (savedAuto === null) {
+                localStorage.setItem('mdro_auto_sync', 'true');
+                document.getElementById('auto-sync-checkbox').checked = true;
+            } else {
+                document.getElementById('auto-sync-checkbox').checked = (savedAuto === 'true');
+            }
         }
 
         function saveWebhookSettings() {
@@ -760,7 +796,7 @@ function formatHeaderAndApplyRules(sheet) {
 
         function setAnswer(itemId, val) {
             formAnswers[itemId] = val;
-            document.querySelectorAll(`.choice-btn-${itemId}`).forEach(btn => btn.className = `choice-btn-${itemId} px-3 py-1 text-xs font-black rounded-lg transition-all text-slate-500 hover:text-slate-800 flex items-center gap-1`);
+            document.querySelectorAll(`.choice-btn-${itemId}`).forEach(btn => btn.className = `choice-btn-${itemId} px-3 py-1 text-xs font-black rounded-lg transition-all text-slate-550 hover:text-slate-850 flex items-center gap-1`);
             const activeBtn = document.getElementById(`btn-${val}-${itemId}`);
             if (val === 'yes') activeBtn.className = `choice-btn-${itemId} px-3 py-1 text-xs font-black rounded-lg transition-all flex items-center gap-1 bg-emerald-500 text-white shadow-sm`;
             if (val === 'no') activeBtn.className = `choice-btn-${itemId} px-3 py-1 text-xs font-black rounded-lg transition-all flex items-center gap-1 bg-rose-500 text-white shadow-sm`;
@@ -825,8 +861,8 @@ function formatHeaderAndApplyRules(sheet) {
 
             saveAuditsToStorage();
 
-            // Auto sync webhook to target sheet AuditData
-            const webhookUrl = localStorage.getItem('mdro_webhook_url');
+            // ส่งข้อมูลขึ้น Google Sheets แผ่นงาน AuditData ทันทีหลังกดบันทึก
+            const webhookUrl = localStorage.getItem('mdro_webhook_url') || HARDCODED_WEBHOOK_URL;
             const autoSync = localStorage.getItem('mdro_auto_sync') === 'true';
             if (webhookUrl && autoSync) {
                 const syncPayload = {
@@ -847,9 +883,15 @@ function formatHeaderAndApplyRules(sheet) {
                         mode: 'no-cors',
                         body: JSON.stringify(syncPayload)
                     });
-                    showToast("ซิงค์เข้าระบบ Google Sheets (AuditData) เรียบร้อย!");
+                    showToast("ซิงค์เข้าระบบ Google Sheets (แผ่นงาน: AuditData) สำเร็จ!");
+                    
+                    // ดึงข้อมูลภาพรวมกลับมาอัปเดตใหม่อีกครั้งให้สมบูรณ์
+                    setTimeout(() => {
+                        fetchDataFromGoogleSheets();
+                    }, 1200);
                 } catch (err) {
                     console.error("Sync error:", err);
+                    showToast("การส่งขึ้น Google Sheets ล้มเหลว โปรดตรวจสอบ Webhook URL", "error");
                 }
             }
 
@@ -858,7 +900,7 @@ function formatHeaderAndApplyRules(sheet) {
             switchTab('dashboard');
         }
 
-        function handleEdit(id) {
+        async function handleEdit(id) {
             const audit = audits.find(a => a.id === id);
             if (!audit) return;
             editingId = id;
@@ -875,11 +917,16 @@ function formatHeaderAndApplyRules(sheet) {
             switchTab('form');
         }
 
-        function handleDelete(id) {
-            if (confirm("ลบแบบประเมินนี้รอบนี้?")) {
+        async function handleDelete(id) {
+            const confirmed = await customConfirm(
+                "ยืนยันการลบ", 
+                "คุณต้องการลบสถิติรอบประเมินนี้ใช่หรือไม่? การลบจะทำเฉพาะในเครื่องนี้เท่านั้น ไม่ส่งผลต่อข้อมูลในชีต", 
+                true
+            );
+            if (confirmed) {
                 audits = audits.filter(a => a.id !== id);
                 saveAuditsToStorage();
-                showToast("ลบข้อมูลเรียบร้อย", "info");
+                showToast("ลบข้อมูลแบบประเมินเรียบร้อยแล้ว", "info");
                 applyFilters();
             }
         }
@@ -892,13 +939,13 @@ function formatHeaderAndApplyRules(sheet) {
 
         function renderDashboard() {
             const totalCount = filteredAudits.length;
-            document.getElementById('dash-summary-count').innerText = `วิเคราะห์ผลตามตัวกรองสำเร็จ: ทั้งหมด ${totalCount} รายการ`;
+            document.getElementById('dash-summary-count').innerText = `วิเคราะห์ผลสำเร็จ: ทั้งหมด ${totalCount} รายการ`;
             
             if (totalCount === 0) {
                 document.getElementById('dash-total-audits').innerText = "0";
                 document.getElementById('dash-perfect-count').innerText = "0 ครั้ง";
                 document.getElementById('dash-poor-count').innerText = "0 ครั้ง";
-                document.getElementById('top-failed-container').innerHTML = '<div class="text-xs text-slate-400 p-2">ไม่มีข้อมูลปัญหา</div>';
+                document.getElementById('top-failed-container').innerHTML = '<div class="text-xs text-slate-400 p-2">ไม่มีข้อมูลข้อบกพร่องตามเงื่อนไข</div>';
                 
                 // Reset Charts
                 document.getElementById('image-bar-chart-container').innerHTML = `
@@ -914,7 +961,6 @@ function formatHeaderAndApplyRules(sheet) {
             }
 
             let grandComplied = 0, grandApplicable = 0;
-            let passedCount = 0, failedCount = 0;
             let perfectCount = 0, poorCount = 0;
 
             const itemCounts = {};
@@ -923,9 +969,6 @@ function formatHeaderAndApplyRules(sheet) {
             filteredAudits.forEach(a => {
                 grandComplied += (a.totalComplied || 0);
                 grandApplicable += ((a.totalComplied || 0) + (a.totalNotComplied || 0));
-
-                if (a.complianceRate >= 80) passedCount++;
-                else failedCount++;
 
                 if (a.complianceRate === 100) perfectCount++;
                 if (a.complianceRate < 50) poorCount++;
@@ -982,14 +1025,12 @@ function formatHeaderAndApplyRules(sheet) {
             let svgContent = `
                 <svg viewBox="0 0 ${width} ${height}" class="w-full h-full overflow-visible">
                     <defs>
-                        <!-- Vivid gradient for chart glowing background -->
                         <linearGradient id="trend-gradient" x1="0" y1="0" x2="0" y2="1">
                             <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.4"/>
                             <stop offset="100%" stop-color="#6366f1" stop-opacity="0"/>
                         </linearGradient>
                     </defs>
                     
-                    <!-- Guide Grid Lines -->
                     <line x1="${paddingX}" y1="${paddingY}" x2="${width - paddingX}" y2="${paddingY}" stroke="#e2e8f0" stroke-width="1" />
                     <text x="${paddingX - 10}" y="${paddingY + 4}" class="text-[9px] font-black fill-slate-400" text-anchor="end">100%</text>
 
@@ -1008,7 +1049,6 @@ function formatHeaderAndApplyRules(sheet) {
                 svgContent += `<path d="${pathD}" fill="none" stroke="#06b6d4" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />`;
             }
 
-            // Interactive Circles with bright glowing states
             points.forEach((p, idx) => {
                 const circleColor = p.rate >= 80 ? '#10b981' : p.rate >= 50 ? '#f59e0b' : '#ef4444';
                 svgContent += `
@@ -1041,24 +1081,16 @@ function formatHeaderAndApplyRules(sheet) {
                 const row = document.createElement('div');
                 row.className = "flex items-center group relative h-8";
                 row.innerHTML = `
-                    <!-- Row label (e.g. ข้อ 1, ข้อ 2) -->
                     <div class="absolute -left-16 w-14 text-right text-xs sm:text-sm font-bold text-slate-600 select-none font-sans">
                         ข้อ ${item.id}
                     </div>
                     
-                    <!-- Horizontal Bar Outer wrapper -->
                     <div class="flex-1 bg-slate-100 h-7 rounded-lg overflow-hidden flex items-center relative group-hover:bg-slate-200/60 transition-colors">
-                        
-                        <!-- Beautiful Vibrant Cyan to Indigo Gradient Bar -->
                         <div class="bg-gradient-to-r from-cyan-400 to-indigo-500 hover:from-cyan-500 hover:to-indigo-600 h-full rounded-lg transition-all duration-1000 flex items-center justify-end px-3 shadow-inner" style="width: ${yesPercent}%">
-                            <!-- Inside label shown when width allows -->
                             ${yesPercent >= 12 ? `<span class="text-[10px] sm:text-xs text-white font-black font-mono drop-shadow-sm">${yesPercent}%</span>` : ''}
                         </div>
-                        
-                        <!-- Outside label shown if the bar is too small -->
                         ${yesPercent < 12 ? `<span class="text-[10px] sm:text-xs text-cyan-600 font-black font-mono pl-2">${yesPercent}%</span>` : ''}
 
-                        <!-- Realtime Info Tooltip on hover -->
                         <span class="absolute left-3 text-[10px] text-slate-700 pointer-events-none truncate pr-16 opacity-0 group-hover:opacity-100 transition-opacity font-bold hidden md:block">
                             ${item.text} | ปฏิบัติ: ${stats.yes} ครั้ง, ไม่ปฏิบัติ: ${stats.no} ครั้ง
                         </span>
@@ -1085,7 +1117,7 @@ function formatHeaderAndApplyRules(sheet) {
             if (sortedProblems.length === 0) {
                 container.innerHTML = `
                     <div class="p-4 bg-emerald-50 text-emerald-800 text-xs font-bold rounded-2xl border border-emerald-100 flex items-center gap-2">
-                        <i data-lucide="check-circle" class="w-4 h-4 text-emerald-500"></i> ยอดเยี่ยม! ไม่พบข้อปฏิบัติที่ผิดพลาดในตัวกรองนี้
+                        <i data-lucide="check-circle" class="w-4 h-4 text-emerald-500"></i> ยอดเยี่ยม! ทุกขั้นตอนได้รับการปฏิบัติตามเกณฑ์ 100%
                     </div>
                 `;
                 lucide.createIcons();
@@ -1119,7 +1151,7 @@ function formatHeaderAndApplyRules(sheet) {
                     </div>
                     <div class="md:col-span-6 flex items-center gap-2">
                         <div class="flex-1 bg-slate-100 h-2.5 rounded-full flex overflow-hidden">
-                            <div class="w-full text-center text-[9px] text-slate-300">ไม่มีข้อมูลตามคำกรอง</div>
+                            <div class="w-full text-center text-[9px] text-slate-300">ไม่มีข้อมูลบันทึก</div>
                         </div>
                     </div>
                 `;
@@ -1183,7 +1215,7 @@ function formatHeaderAndApplyRules(sheet) {
                 container.innerHTML = `
                     <div class="bg-white p-8 text-center rounded-3xl shadow-md border border-slate-100 flex flex-col items-center justify-center">
                         <i data-lucide="clipboard-list" class="w-10 h-10 text-slate-300 mb-2"></i>
-                        <p class="text-slate-500 font-bold text-sm">ไม่พบประวัติผลการประเมินที่ค้นหา</p>
+                        <p class="text-slate-550 font-bold text-sm">ไม่พบประวัติผลการประเมินที่ตรงกัน</p>
                     </div>
                 `;
                 lucide.createIcons();
@@ -1200,7 +1232,7 @@ function formatHeaderAndApplyRules(sheet) {
                             <h4 class="font-extrabold text-slate-800 text-sm">การประเมินวันที่: ${audit.evalDate}</h4>
                             <span class="text-[10px] bg-cyan-50 text-cyan-600 px-2 py-0.5 rounded font-bold font-mono">ID: ${audit.id.substring(6,12)}</span>
                         </div>
-                        <p class="text-xs text-slate-500">${audit.generalNotes ? `หมายเหตุ: <strong>${audit.generalNotes}</strong>` : 'ไม่มีบันทึกเพิ่มเติม'}</p>
+                        <p class="text-xs text-slate-500">${audit.generalNotes ? `หมายเหตุภาพรวม: <strong>${audit.generalNotes}</strong>` : 'ไม่มีบันทึกเพิ่มเติม'}</p>
                     </div>
                     <div class="flex items-center justify-between md:justify-end gap-4 border-t border-slate-50 pt-3 md:border-0 md:pt-0">
                         <div class="text-[10px] font-bold text-slate-400 space-y-0.5">
@@ -1226,16 +1258,18 @@ function formatHeaderAndApplyRules(sheet) {
 
         function handleExportCSV() {
             if (filteredAudits.length === 0) {
-                showToast("ไม่มีข้อมูลภายใต้เงื่อนไขตัวกรองนี้ให้ออกรายงาน", "error");
+                showToast("ไม่มีข้อมูลภายใต้เงื่อนไขตัวกรองปัจจุบันให้ออกรายงาน", "error");
                 return;
             }
 
             let csvContent = "data:text/csv;charset=utf-8,\uFEFF";
             const headers = ["รหัสบันทึก", "วันที่ประเมิน", "% ปฏิบัติถูกต้อง", "รวมข้อปฏิบัติ", "รวมข้อไม่ปฏิบัติ", "รวมข้อไม่เกี่ยวข้อง"];
             CHECKLIST_ITEMS.forEach(item => {
-                headers.push(`ข้อ ${item.id} สถานะ`, `ข้อ ${item.id} หมายเหตุ`);
+                headers.push(`ข้อ ${item.id} : สถานะ`, `ข้อ ${item.id} : หมายเหตุ`);
             });
             headers.push("หมายเหตุทั่วไปภาพรวม");
+
+            csvContent += headers.map(h => `"${h}"`).join(",") + "\r\n";
 
             filteredAudits.forEach(audit => {
                 const row = [audit.id, audit.evalDate, `${audit.complianceRate}%`, audit.totalComplied, audit.totalNotComplied, audit.totalNA];
@@ -1255,15 +1289,21 @@ function formatHeaderAndApplyRules(sheet) {
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-            showToast("ดาวน์โหลดไฟล์รายงาน CSV เรียบร้อย");
+            showToast("ดาวน์โหลดรายงาน CSV สำเร็จ");
         }
 
         async function syncAllToWebhook() {
             const webhookUrl = document.getElementById('webhook-url-input').value;
-            if (!webhookUrl) { showToast("กรุณาระบุ Webhook URL", "error"); return; }
-            if (filteredAudits.length === 0) { showToast("ไม่มีข้อมูลใหัปโหลด", "error"); return; }
+            if (!webhookUrl) { 
+                showToast("กรุณาระบุ Webhook URL ในช่องตั้งค่า", "error"); 
+                return; 
+            }
+            if (filteredAudits.length === 0) { 
+                showToast("ไม่มีข้อมูลประเมินให้อัปโหลดในขณะนี้", "error"); 
+                return; 
+            }
 
-            showToast("กำลังซิงค์ส่งข้อมูลตามตัวกรองเข้าแผ่นงาน AuditData...", "info");
+            showToast("กำลังเริ่มอัปโหลดชุดข้อมูลตามเงื่อนไขเข้าชีตแผ่นงาน AuditData...", "info");
             let successCount = 0;
 
             for (const audit of filteredAudits) {
@@ -1286,9 +1326,16 @@ function formatHeaderAndApplyRules(sheet) {
                         body: JSON.stringify(syncPayload)
                     });
                     successCount++;
-                } catch (e) { console.error(e); }
+                } catch (e) { 
+                    console.error("Single sync fail:", e); 
+                }
             }
-            showToast("ซิงค์ข้อมูลเข้า AuditData สำเร็จ!");
+            showToast(`นำส่งข้อมูลสำเร็จทั้งสิ้น ${successCount} แถวขึ้น Google Sheets (AuditData)`);
+            
+            // เรียกขอสถิติกลับมาอัปเดตแบบเรียลไทม์
+            setTimeout(() => {
+                fetchDataFromGoogleSheets();
+            }, 1000);
         }
     </script>
 </body>
