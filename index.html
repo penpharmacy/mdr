@@ -29,7 +29,7 @@
     <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
       <div class="flex items-center space-x-3">
         <!-- New Logo (Uploaded Germ Image) -->
-        <img src="image_4ec7a2.jpg" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3209/3209255.png'" alt="MDR Logo" class="w-11 h-11 object-cover rounded-full bg-white border-2 border-purple-200 shadow-sm p-0.5">
+        <img src="image_4eb93b.jpg" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3209/3209255.png'" alt="MDR Logo" class="w-11 h-11 object-cover rounded-full bg-white border-2 border-purple-200 shadow-sm p-0.5">
         <div>
           <h1 class="text-lg md:text-xl font-bold tracking-wide">MDR Check list</h1>
           <p class="text-xs text-purple-100 font-light">รพ.พุนพิน สุราษฎร์ธานี</p>
@@ -285,7 +285,7 @@
         </div>
         <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
           <span class="text-xs text-slate-400 block font-semibold uppercase tracking-wider">จุดที่ต้องปรับปรุงเร่งด่วน</span>
-          <span id="repCriticalImprovement" class="text-sm font-bold text-rose-600 line-clamp-2 mt-2 leading-tight">ไม่มีข้อมูล</span>
+          <span id="repCriticalImprovement" class="text-xs sm:text-sm font-bold text-rose-600 line-clamp-4 mt-2 leading-snug">ไม่มีข้อมูล</span>
           <span class="text-[10px] text-slate-400 block mt-2">หัวข้อที่อัตราการปฏิบัติต่ำที่สุด</span>
         </div>
       </div>
@@ -311,19 +311,20 @@
           </div>
         </div>
 
-        <!-- Chart 2: Top Non-Compliance (Changed to HTML List for readability) -->
+        <!-- Chart 2: Top Non-Compliance (Compact HTML List) -->
         <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
           <div class="pb-3 mb-4 border-b border-slate-100 flex justify-between items-center">
             <h3 class="font-bold text-slate-800 text-sm md:text-base flex items-center space-x-2">
-              <i data-lucide="trending-down" class="w-5 h-5 text-rose-500"></i>
-              <span>สรุปหัวข้อที่ "ไม่ปฏิบัติ" (เรียงจากมากไปน้อย)</span>
+              <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"></path></svg>
+              <span>สรุปหัวข้อที่ "ไม่ปฏิบัติ" (เรียงจาก % มากไปน้อย)</span>
             </h3>
           </div>
-          <div id="nonComplianceListContainer" class="space-y-4 w-full">
+          <!-- Changed to CSS Columns for top-to-bottom, then left-to-right flow -->
+          <div id="nonComplianceListContainer" class="columns-1 lg:columns-2 gap-3 w-full">
             <!-- Dynamic list goes here -->
           </div>
           <div id="chart2EmptyState" class="bg-emerald-50/50 rounded-xl p-8 flex flex-col items-center justify-center text-emerald-600 space-y-2 hidden border border-emerald-100 mt-2">
-            <i data-lucide="check-circle" class="w-12 h-12 text-emerald-400"></i>
+            <svg class="w-12 h-12 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             <p class="text-sm font-bold mt-2">ยอดเยี่ยม! ไม่มีหัวข้อที่ไม่ปฏิบัติในช่วงเวลานี้</p>
           </div>
         </div>
@@ -332,8 +333,12 @@
 
       <!-- Compliance by Item Detailed Breakdown -->
       <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
-        <h2 class="font-bold text-slate-800 text-lg mb-4">ตารางรายละเอียดอัตราการปฏิบัติตามมาตรฐาน (16 ข้อ)</h2>
-        <div class="space-y-4" id="itemBreakdownContainer">
+        <h2 class="font-bold text-slate-800 text-lg mb-4 flex items-center space-x-2">
+          <span>ตารางรายละเอียดอัตราการปฏิบัติตามมาตรฐาน (16 ข้อ)</span>
+        </h2>
+        
+        <!-- Changed to CSS Columns for top-to-bottom, then left-to-right flow -->
+        <div class="columns-1 lg:columns-2 gap-3 w-full" id="itemBreakdownContainer">
           <!-- Dynamically populated breakdown elements -->
         </div>
       </div>
@@ -344,44 +349,72 @@
     <div id="tab-settings-content" class="tab-content hidden space-y-6">
       
       <!-- API Setting Card -->
-      <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
-        <div class="flex items-center space-x-2 pb-4 mb-4 border-b border-slate-100">
-          <h2 class="font-semibold text-slate-800 text-lg">ตั้งค่าการซิงค์ข้อมูล Google Sheets</h2>
+     <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
+  <div class="flex items-center space-x-2 pb-4 mb-4 border-b border-slate-100">
+    <h2 class="font-semibold text-slate-800 text-lg">ตั้งค่าการซิงค์ข้อมูล Google Sheets</h2>
+  </div>
+
+  <div class="space-y-4">
+    
+    <div class="p-4 bg-blue-50 border border-blue-100 rounded-2xl flex items-start gap-3">
+        <i data-lucide="info" class="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0"></i>
+        <div class="text-xs text-blue-800 leading-relaxed w-full">
+            <div class="flex justify-between items-center mb-2">
+                <p class="font-extrabold">สเปรดชีตเป้าหมายหลัก:</p>
+                <span class="px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded-full text-[10px] font-bold uppercase">Sync Enabled</span>
+            </div>
+            <a href="https://docs.google.com/spreadsheets/d/1Y09EI4c0qPts8E7vet2_tWAjVdeT6c1xreChlTSHKQU/edit?gid=0#gid=0" 
+               target="_blank" class="font-bold underline text-indigo-600 hover:text-indigo-800 flex items-center gap-1">
+               MDRO_AUDIT - Google ชีต (คลิกเพื่อเปิด) <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+            </a>
+            <p class="mt-2 text-[11px] opacity-80">
+                ข้อมูลจะถูกบันทึกลงในแท็บ <code class="bg-blue-100 px-1 rounded font-bold">"AuditData"</code> อัตโนมัติ (ระบบรองรับ 16 หัวข้อ)
+            </p>
         </div>
+    </div>
 
-        <div class="space-y-4">
-          <div class="p-4 bg-blue-50 border border-blue-100 rounded-2xl flex items-start gap-3">
-              <i data-lucide="info" class="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0"></i>
-              <div class="text-xs text-blue-800 leading-relaxed w-full">
-                  <div class="flex justify-between items-center mb-2">
-                      <p class="font-extrabold">สเปรดชีตเป้าหมายหลัก:</p>
-                      <span class="px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded-full text-[10px] font-bold uppercase">Sync Enabled</span>
-                  </div>
-                  <a href="https://docs.google.com/spreadsheets/d/1Y09EI4c0qPts8E7vet2_tWAjVdeT6c1xreChlTSHKQU/edit?gid=0#gid=0" 
-                     target="_blank" class="font-bold underline text-indigo-600 hover:text-indigo-800 flex items-center gap-1">
-                     MDRO_AUDIT - Google ชีต (คลิกเพื่อเปิด) <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
-                  </a>
-                  <p class="mt-2 text-[11px] opacity-80">
-                      ข้อมูลจะถูกบันทึกลงในแท็บ <code class="bg-blue-100 px-1 rounded font-bold">"AuditData"</code> อัตโนมัติ (ระบบรองรับ 16 หัวข้อ)
-                  </p>
-              </div>
-          </div>
+    <div>
+      <label class="block text-sm font-medium text-slate-700 mb-1">Google Apps Script Web App URL</label>
+      <input type="text" id="apiEndpointUrl" placeholder="https://script.google.com/macros/s/.../exec" class="w-full px-4 py-2 border border-slate-200 rounded-xl focus:ring-2 focus:ring-purple-500 outline-none transition-all text-sm font-mono text-slate-600">
+    </div>
 
-          <div>
-            <label class="block text-sm font-medium text-slate-700 mb-1">Google Apps Script Web App URL</label>
-            <input type="text" id="apiEndpointUrl" placeholder="https://script.google.com/macros/s/.../exec" class="w-full px-4 py-2 border border-slate-200 rounded-xl focus:ring-2 focus:ring-purple-500 outline-none transition-all text-sm font-mono text-slate-600">
-          </div>
+    <div class="flex flex-col sm:flex-row gap-2 pt-2">
+      <button onclick="saveSettings()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2.5 px-6 rounded-xl shadow-md transition-all text-sm">
+        บันทึกการตั้งค่า
+      </button>
+      <button onclick="testApiConnection()" class="border border-slate-200 hover:bg-slate-50 text-slate-600 font-bold py-2.5 px-6 rounded-xl transition-all text-sm flex items-center justify-center space-x-1">
+        <span>ทดสอบการเชื่อมต่อ API</span>
+      </button>
+    </div>
+  </div>
+</div>
 
-          <div class="flex flex-col sm:flex-row gap-2 pt-2">
-            <button onclick="saveSettings()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2.5 px-6 rounded-xl shadow-md transition-all text-sm">
-              บันทึกการตั้งค่า
-            </button>
-            <button onclick="testApiConnection()" class="border border-slate-200 hover:bg-slate-50 text-slate-600 font-bold py-2.5 px-6 rounded-xl transition-all text-sm flex items-center justify-center space-x-1">
-              <span>ทดสอบการเชื่อมต่อ API</span>
-            </button>
-          </div>
+    <!-- Instructions Card (ซ่อนไว้ด้วยคลาส hidden) -->
+<div class="hidden bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
+  <h2 class="font-semibold text-slate-800 text-lg pb-4 mb-4 border-b border-slate-100">
+    <span>วิธีการเริ่มใช้งานร่วมกับ Google Sheets (ภายใน 3 นาที)</span>
+  </h2>
+
+        <div class="space-y-4 text-sm text-slate-600">
+          <ol class="list-decimal pl-5 space-y-3">
+            <li>เปิดลิงก์ Google Sheet ที่กำหนด: <a href="https://docs.google.com/spreadsheets/d/1yOPzmyd7ExMELRpwltyPu7onH5dCwpjZUPs5IP2JqQ4/edit?gid=0#gid=0" target="_blank" class="text-pink-600 hover:underline font-medium">cauti - Google ชีต</a></li>
+            <li>ไปที่เมนู <strong>ส่วนขยาย (Extensions)</strong> &gt; เลือก <strong>Apps Script</strong></li>
+            <li>ลบโค้ดเริ่มต้นออก แล้วคัดลอกโค้ดจากไฟล์ <code>รหัส.gs</code> ไปวาง</li>
+            <li>คลิกปุ่ม <strong>บันทึกโครงการ (Save Project)</strong> (ไอคอนแผ่นดิสก์)</li>
+            <li>คลิกปุ่ม <strong>การใช้งาน (Deploy)</strong> ด้านบนขวา &gt; เลือก <strong>การจัดการการทำงานที่จัดเตรียมไว้ใหม่ (New Deployment)</strong></li>
+            <li>เลือกประเภทการปรับใช้เป็น <strong>เว็บแอป (Web App)</strong></li>
+            <li>ตั้งค่าการตั้งค่าต่อไปนี้:
+              <ul class="list-disc pl-5 mt-1 space-y-1">
+                <li><strong>เรียกใช้ในฐานะ (Execute as):</strong> "ฉัน (Your Email)"</li>
+                <li><strong>ผู้มีสิทธิ์เข้าถึง (Who has access):</strong> "ทุกคน (Anyone)" <span class="text-xs text-rose-500 font-semibold">(จำเป็นสำหรับการรับส่งข้อมูล)</span></li>
+              </ul>
+            </li>
+            <li>คลิก <strong>ปรับใช้ (Deploy)</strong> และให้สิทธิ์การเข้าถึงข้อมูล (Authorize Access) เมื่อมีป็อปอัปถาม</li>
+            <li>คัดลอก <strong>URL เว็บแอป (Web App URL)</strong> ที่ได้รับ มาวางในส่วน "ตั้งค่าการซิงค์ข้อมูล" ด้านบน และกดบันทึก</li>
+          </ol>
         </div>
       </div>
+
     </div>
 
   </main>
@@ -451,10 +484,10 @@
       14: "จำกัดบุคลากร/ผู้เฝ้าไข้ให้น้อยที่สุดเข้าไปดูแลผู้ป่วยห้องแยก",
       15: "ให้คำแนะนำผู้ป่วยและญาติในการปฏิบัติตัว (แจกแผ่นพับ)",
       16: `ทำการเพาะเชื้อเพื่อยุติ contact precautions พิจารณาการยกเลิก contact precautions
-          <ul class="mt-2 space-y-1.5 text-xs font-normal text-slate-600 pl-1">
-            <li class="flex items-start leading-snug"><span class="font-bold text-purple-600 mr-1.5 min-w-[12px]">1.</span> <span>เมื่อตรวจไม่พบเชื้อ อาการและอาการแสดงของการติดเชื้อหายไป</span></li>
-            <li class="flex items-start leading-snug"><span class="font-bold text-purple-600 mr-1.5 min-w-[12px]">2.</span> <span>ไม่ต้องนัดผู้ป่วยเพื่อมาทำการเพาะเชื้อ หากภายใน 6 เดือนผู้ป่วยมา Admit ให้ทำการเพาะเชื้อ ตาม Clinical specimen ผล Negative 2 ครั้งห่างกัน 7 วัน</span></li>
-            <li class="flex items-start leading-snug"><span class="font-bold text-purple-600 mr-1.5 min-w-[12px]">3.</span> <span>กรณี VRE/ CRE ทำ RSC for VRE / CRE 3 ครั้งห่างกัน 1 wk. ให้ผล Negative ยกเลิกได้ หากยังพบเชื้อให้ติดตามอีก 6 เดือน <span class="text-purple-500">(ทั้งนี้อยู่ในดุลยพินิจของแพทย์)</span></span></li>
+          <ul class="mt-1 space-y-1 text-[10px] sm:text-xs font-normal text-slate-500 pl-1">
+            <li class="flex items-start leading-tight"><span class="font-bold text-purple-500 mr-1 min-w-[10px]">1.</span> <span>เมื่อตรวจไม่พบเชื้อ อาการและอาการแสดงของการติดเชื้อหายไป</span></li>
+            <li class="flex items-start leading-tight"><span class="font-bold text-purple-500 mr-1 min-w-[10px]">2.</span> <span>ไม่ต้องนัดผู้ป่วยเพื่อมาทำการเพาะเชื้อ หากภายใน 6 เดือนผู้ป่วยมา Admit ให้ทำการเพาะเชื้อ ตาม Clinical specimen ผล Negative 2 ครั้งห่างกัน 7 วัน</span></li>
+            <li class="flex items-start leading-tight"><span class="font-bold text-purple-500 mr-1 min-w-[10px]">3.</span> <span>กรณี VRE/ CRE ทำ RSC for VRE / CRE 3 ครั้งห่างกัน 1 wk. ให้ผล Negative ยกเลิกได้ หากยังพบเชื้อให้ติดตามอีก 6 เดือน <span class="text-purple-400">(ทั้งนี้อยู่ในดุลยพินิจของแพทย์)</span></span></li>
           </ul>`
     };
 
@@ -936,7 +969,7 @@
         document.getElementById('repFullComplianceCount').innerText = "0";
         document.getElementById('repFullCompliancePct').innerText = "0% (0/0) ของทั้งหมด";
         document.getElementById('repCriticalImprovement').innerText = "ไม่มีข้อมูล";
-        document.getElementById('itemBreakdownContainer').innerHTML = `<div class="text-center py-6 text-slate-400 text-sm">ไม่พบข้อมูลสถิติตามเงื่อนไขที่เลือก</div>`;
+        document.getElementById('itemBreakdownContainer').innerHTML = `<div class="text-center py-6 text-slate-400 text-sm w-full lg:col-span-2">ไม่พบข้อมูลสถิติตามเงื่อนไขที่เลือก</div>`;
         
         document.getElementById('chart1EmptyState').classList.remove('hidden');
         if(comparisonChartInstance) comparisonChartInstance.destroy();
@@ -982,11 +1015,14 @@
         fYes.push(`${stats[i].yes}/${totalEval}`);
         fNo.push(`${stats[i].no}/${totalEval}`);
 
-        if(totalEval > 0 && pYes < lowestRate) { lowestRate = pYes; lowestText = `ข้อ ${i}`; }
-
         // Strip HTML from text for chart labels to prevent rendering issues
         tempDiv.innerHTML = stats[i].text;
         const cleanText = tempDiv.textContent || tempDiv.innerText || "";
+
+        if(totalEval > 0 && pYes < lowestRate) { 
+            lowestRate = pYes; 
+            lowestText = `ข้อ ${i}. ${cleanText}`; 
+        }
 
         // Collect non-compliance data
         if (stats[i].no > 0) {
@@ -1000,20 +1036,23 @@
            });
         }
 
+        // เช็คเงื่อนไขถ้ามีการไม่ปฏิบัติ > 0 ค่อยแสดงข้อความสีแดง
+        const noTextLabel = stats[i].no > 0 ? `<span class="font-bold text-rose-500">ไม่ปฏิบัติ: ${pNo}% (${stats[i].no}/${totalEval})</span>` : ``;
+
         html += `
-          <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
-            <div class="flex flex-col items-start text-xs mb-2 gap-2">
-              <div class="font-semibold text-slate-800 leading-relaxed w-full">
-                <span class="text-purple-600 font-bold mr-1">ข้อ ${i}.</span>${stats[i].text}
-              </div>
-              <div class="w-full flex justify-between">
-                <div class="font-bold text-emerald-600 text-[11px] whitespace-nowrap">ปฏิบัติ: ${pYes}% (${stats[i].yes}/${totalEval})</div>
-                <div class="font-bold text-rose-500 text-[11px] whitespace-nowrap">ไม่ปฏิบัติ: ${pNo}% (${stats[i].no}/${totalEval})</div>
-              </div>
+          <div class="break-inside-avoid mb-4 flex flex-col justify-between bg-slate-50/80 p-4 rounded-xl border border-slate-100 hover:border-purple-200 transition-all shadow-sm">
+            <div class="font-semibold text-slate-800 text-[13px] leading-relaxed mb-3">
+              <span class="text-purple-600 font-bold mr-1">ข้อ ${i}.</span>${stats[i].text}
             </div>
-            <div class="w-full bg-slate-200 rounded-full h-2 flex overflow-hidden">
-              <div class="bg-purple-500 h-full" style="width: ${pYes}%"></div>
-              <div class="bg-rose-400 h-full" style="width: ${pNo}%"></div>
+            <div class="w-full">
+              <div class="flex justify-between items-end text-xs mb-1.5 px-0.5">
+                <span class="font-bold text-emerald-600">ปฏิบัติ: ${pYes}% (${stats[i].yes}/${totalEval})</span>
+                ${noTextLabel}
+              </div>
+              <div class="w-full bg-slate-200 rounded-full h-2.5 flex overflow-hidden shadow-inner">
+                <div class="bg-purple-500 h-full transition-all duration-1000" style="width: ${pYes}%"></div>
+                <div class="bg-rose-400 h-full transition-all duration-1000" style="width: ${pNo}%"></div>
+              </div>
             </div>
           </div>`;
       }
@@ -1061,41 +1100,52 @@
       const listContainer = document.getElementById('nonComplianceListContainer');
       const emptyState2 = document.getElementById('chart2EmptyState');
       
-      if (ncDataArr.length === 0) {
-          listContainer.innerHTML = '';
-          emptyState2.classList.remove('hidden');
-      } else {
-          emptyState2.classList.add('hidden');
+      if (listContainer && emptyState2) {
+        if (ncDataArr.length === 0) {
+            listContainer.innerHTML = '';
+            emptyState2.classList.remove('hidden');
+        } else {
+            emptyState2.classList.add('hidden');
 
-          // Sort descending by percentage (pct) of non-compliance, then by count
-          ncDataArr.sort((a, b) => b.pct - a.pct || b.noCount - a.noCount || a.item - b.item);
+            // Sort descending by percentage (pct) of non-compliance, then by count, then by item number
+            ncDataArr.sort((a, b) => b.pct - a.pct || b.noCount - a.noCount || a.item - b.item);
 
-          let listHtml = '';
-          ncDataArr.forEach((d, index) => {
-              const rank = index + 1;
-              listHtml += `
-                <div class="flex flex-col space-y-3 bg-rose-50/30 p-4 rounded-xl border border-rose-100 hover:bg-rose-50 transition-colors shadow-sm">
-                  <div class="flex flex-col sm:flex-row justify-between items-start gap-3 sm:gap-4">
-                    <div class="flex items-start gap-3 w-full">
-                       <div class="w-7 h-7 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5 shadow-sm">${rank}</div>
-                       <div class="text-sm font-medium text-slate-700 leading-relaxed w-full">
-                         <span class="font-bold text-rose-600 mr-1">ข้อ ${d.item}.</span> ${d.fullText}
-                       </div>
+            let listHtml = '';
+            ncDataArr.forEach((d, index) => {
+                const rank = index + 1;
+                
+                // เปลี่ยนสีตัวเลขลำดับให้แตกต่างกัน
+                let rankBadge = "";
+                if (rank === 1) rankBadge = "bg-amber-500 text-white shadow-md border-amber-600";
+                else if (rank === 2) rankBadge = "bg-slate-400 text-white shadow-sm border-slate-500";
+                else if (rank === 3) rankBadge = "bg-amber-700 text-white shadow-sm border-amber-800";
+                else rankBadge = "bg-indigo-500 text-white shadow-sm border-indigo-600";
+
+                listHtml += `
+                  <div class="break-inside-avoid mb-3 bg-white p-2.5 rounded-lg border border-blue-100 shadow-sm hover:shadow-md transition-all">
+                    <div class="flex justify-between items-start gap-2">
+                      <div class="flex items-start gap-2 w-full">
+                         <div class="w-5 h-5 rounded-full ${rankBadge} border flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">${rank}</div>
+                         <div class="text-[11px] font-medium text-slate-700 leading-snug">
+                           <span class="font-bold text-rose-600">ข้อ ${d.item}.</span> ${d.fullText}
+                         </div>
+                      </div>
+                      <div class="shrink-0 text-right flex flex-col items-end">
+                         <div class="text-rose-600 font-bold text-[12px] leading-none mb-1">${d.noCount} <span class="text-[8px] font-medium text-rose-400">ครั้ง</span></div>
+                         <div class="text-[9px] font-semibold text-slate-500 bg-slate-50 px-1 py-0.5 rounded leading-none">${d.pct}% <span class="font-normal">(${d.noCount}/${d.totalEval})</span></div>
+                      </div>
                     </div>
-                    <div class="text-right shrink-0 bg-white px-3 py-1.5 rounded-lg border border-rose-100 shadow-sm sm:min-w-[100px] w-full sm:w-auto flex flex-row sm:flex-col justify-between items-center sm:items-end">
-                       <div class="text-rose-600 font-bold text-sm sm:text-base">${d.noCount} ครั้ง</div>
-                       <div class="text-xs font-semibold text-slate-500 whitespace-nowrap">${d.pct}% (${d.noCount}/${d.totalEval})</div>
+                    <div class="w-full bg-slate-100 rounded-full h-1 mt-2 ml-[28px]" style="width: calc(100% - 28px);">
+                       <div class="bg-rose-500 h-full rounded-full transition-all duration-1000" style="width: ${d.pct}%"></div>
                     </div>
                   </div>
-                  <div class="w-full bg-slate-200/80 rounded-full h-2 overflow-hidden flex sm:ml-10" style="width: 100%; max-width: calc(100% - 2.5rem);">
-                     <div class="bg-rose-500 h-full rounded-full transition-all duration-500" style="width: ${d.pct}%"></div>
-                  </div>
-                </div>
-              `;
-          });
-          listContainer.innerHTML = listHtml;
+                `;
+            });
+            listContainer.innerHTML = listHtml;
+        }
       }
     }
+
   </script>
 </body>
 </html>
